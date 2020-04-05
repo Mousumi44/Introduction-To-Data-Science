@@ -1,0 +1,367 @@
+---
+title: "March Madness"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(readr)
+mens <- read.csv("march-madness-analytics-2020/2020DataFiles/2020-Mens-Data/MEvents2015.csv")
+#mens <-  read.csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MEvents2015.csv")
+#mens1 <- read.csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MEvents2016.csv")
+#mens2 <- read.csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MEvents2017.csv")
+#mens3 <- read.csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MEvents2018.csv")
+#mens4 <- read.csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MEvents2019.csv")
+#mens <- MEvents2015[complete.cases(MEvents2015),]
+#mens1 <- MEvents2016[complete.cases(MEvents2016),]
+#mens2 <- MEvents2017[complete.cases(MEvents2017),]
+#mens3 <- MEvents2018[complete.cases(MEvents2018),]
+#mens4 <- MEvents2019[complete.cases(MEvents2019),]
+#MEvents2015
+#mens
+#mens1
+#mens2
+#mens3
+#mens4
+```
+
+
+```{r}
+#Fauziya
+#MEvents2015 <- read.csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MEvents2015.csv")
+#mens <- MEvents2015[complete.cases(MEvents2015),]
+
+```
+
+####################################################################################
+# Wins Box Plot
+Here, we study the distribution of the win scores throughout each game season
+####################################################################################
+
+```{r}
+mens$DayNum<-as.factor(mens$DayNum)
+library(ggplot2)
+box_plot <- ggplot(mens,aes(x=DayNum, y=WFinalScore)) + geom_boxplot()
+box_plot
+#boxplot(WFinalScore~DayNum, data = mens)
+```
+
+
+```{r}
+mens1$DayNum<-as.factor(mens1$DayNum)
+box_plot1 <- ggplot(mens1,aes(x=DayNum, y=WFinalScore)) + geom_boxplot()
+box_plot1
+```
+
+```{r}
+mens2$DayNum<-as.factor(mens2$DayNum)
+box_plot2 <- ggplot(mens2,aes(x=DayNum, y=WFinalScore)) + geom_boxplot()
+box_plot2
+```
+```{r}
+mens3$DayNum<-as.factor(mens3$DayNum)
+box_plot3 <- ggplot(mens3,aes(x=DayNum, y=WFinalScore)) + geom_boxplot()
+box_plot3
+```
+
+```{r}
+mens4$DayNum<-as.factor(mens4$DayNum)
+box_plot4 <- ggplot(mens4,aes(x=DayNum, y=WFinalScore)) + geom_boxplot()
+box_plot4
+```
+
+########################################################################################
+# Loss Box plot
+Here, we study the distribution of the loose team scores throughout each game season
+########################################################################################
+
+```{r}
+mens$DayNum<-as.factor(mens$DayNum)
+box_plot <- ggplot(mens,aes(x=DayNum, y=LFinalScore)) + geom_boxplot()
+box_plot
+```
+
+```{r}
+mens1$DayNum<-as.factor(mens1$DayNum)
+box_plot1 <- ggplot(mens1,aes(x=DayNum, y=LFinalScore)) + geom_boxplot()
+box_plot1
+```
+
+```{r}
+mens2$DayNum<-as.factor(mens2$DayNum)
+box_plot2 <- ggplot(mens2,aes(x=DayNum, y=LFinalScore)) + geom_boxplot()
+box_plot2
+```
+```{r}
+mens3$DayNum<-as.factor(mens3$DayNum)
+box_plot3 <- ggplot(mens3,aes(x=DayNum, y=LFinalScore)) + geom_boxplot()
+box_plot3
+```
+
+```{r}
+mens4$DayNum<-as.factor(mens4$DayNum)
+box_plot4 <- ggplot(mens4,aes(x=DayNum, y=LFinalScore)) + geom_boxplot()
+box_plot4
+```
+
+##############################################################
+#barplot
+We try to get an overview of typical game events
+##############################################################
+```{r}
+b<-table(mens$EventType)
+barplot(b,main = "Event Type Frequency",xlab = "Event Type",col = "red")
+```
+
+######################################################################
+# Frequency Disttribution
+Here, we determine the total number of games won by each team
+######################################################################
+```{r}
+library(dplyr)
+m=mens
+m <- m %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE)
+```
+
+# Frequencies
+```{r}
+y<-table(m$WTeamID)
+names(y)[which(y==max(y))]
+n<-table(m$LTeamID)
+names(n)[which(y==max(n))]
+```
+
+```{r}
+barplot(y)
+barplot(n)
+```
+
+
+#############################################################################################
+# Having seen the distribution of wins and losses, we now look closer at a few "important" teams
+#############################################################################################
+```{r}
+z<-sort(y,decreasing = TRUE)
+n<-sort(n,decreasing = TRUE)
+
+(v<-z[1:10])
+(v1<-z[177:199])
+(v2<-z[331:349])
+(vec<-z[c(1:3,177:180,331:333)])
+
+barplot(v,col="blue")
+barplot(v1,col="blue")
+barplot(v2,col="blue")
+barplot(vec,col="blue")
+
+
+```
+
+```{r}
+
+x<-as.data.frame(vec)
+names(x)<-c("EventTeamID","NumWins")
+d<-as.vector(x$EventTeamID)
+MTeams <- read_csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MDataFiles_Stage1/MTeams.csv")
+names(MTeams)[1]<-"EventTeamID"
+mt<-MTeams[which(MTeams$EventTeamID %in% d),]
+nt<-merge(x,mt,by="EventTeamID")
+nt1<-merge(nt,m,by="EventTeamID")
+barplot(nt$NumWins~nt$TeamName,col="red",ylab = "2015-Number Of Wins",xlab = "TeamName")
+```
+
+
+################################
+#2best 2middle 2bottom Teams
+################################
+
+```{r}
+w<-m[m$WTeamID == c(1246,1458, 1112, 1276, 1287, 1291, 1307, 1123, 1194, 1286), ]
+
+```
+
+
+```{r}
+w[w$LTeamID !=c(1246,1458, 1112, 1276, 1287, 1291, 1307, 1123, 1194, 1286), ]
+```
+
+
+```{r}
+p<-c(1246,1458, 1112, 1276, 1287, 1291, 1307, 1123, 1194, 1286)
+MPlayers <- read_csv("march-madness-analytics-2020/2020DataFiles/2020DataFiles/2020-Mens-Data/MPlayers.csv")
+
+dat<-merge(mens,MPlayers,by.x=c("EventPlayerID"),
+    by.y=c("PlayerID"))
+
+ dat2<-dat[dat$EventTeamID %in% p,]
+ #at2
+ 
+ a1<-dat2 %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE) 
+ 
+ a2<-dat2 %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE) 
+ 
+ 
+ 
+a3<-dat2 %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE)
+
+
+a4<-dat2 %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE) 
+
+a5<-dat2 %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE) 
+a6<-dat2 %>% 
+      group_by(DayNum) %>% 
+      distinct(WTeamID,.keep_all = TRUE) 
+
+
+
+
+
+#at3
+ 
+ 
+dat4 <- a1 %>% 
+  mutate(WT = ifelse(WTeamID  ==1246 , 1,0))
+dat4 <- dat4 %>% 
+  mutate(LT = ifelse(LTeamID ==1246, -1,0)) 
+
+dat5 <- a2 %>% 
+  mutate(WT = ifelse(WTeamID  ==1458 , 1,0))
+dat5 <- dat5 %>% 
+  mutate(LT = ifelse(LTeamID ==1458, -1,0))  
+
+
+dat6 <- a3 %>% 
+  mutate(WT = ifelse(WTeamID  ==1276 , 1,0))
+dat6 <- dat6 %>% 
+  mutate(LT = ifelse(LTeamID ==1276, -1,0))  
+
+dat7 <- a4 %>% 
+  mutate(WT = ifelse(WTeamID  ==1287 , 1,0))
+dat7 <- dat7 %>% 
+  mutate(LT = ifelse(LTeamID ==1287, -1,0))  
+
+ 
+dat8 <- a5 %>% 
+  mutate(WT = ifelse(WTeamID  ==1123 , 1,0))
+dat8 <- dat8 %>% 
+  mutate(LT = ifelse(LTeamID ==1123, -1,0))  
+ 
+ 
+  
+dat9 <- a6 %>% 
+  mutate(WT = ifelse(WTeamID  ==1194 , 1,0))
+dat9 <- dat9 %>% 
+  mutate(LT = ifelse(LTeamID ==1194, -1,0))  
+ 
+  
+ 
+ 
+
+#dat4 <- dat3 %>% 
+ # mutate(WT = ifelse(WTeamID  %in% p, 1,0))
+#dat4 <- dat4 %>% 
+#  mutate(LT = ifelse(LTeamID  %in% p, -1,0)) 
+attach(dat4)
+dat4<-dat4[order(DayNum),]
+dat4$sum <- dat4$WT + dat4$LT
+d1<-dat4[which(dat4$WTeamID==1246 | dat4$LTeamID==1246 ),]
+ h1<-cumsum(d1$sum)
+ d1$h1<-h1
+detach(dat4)
+
+attach(dat5)
+dat5<-dat5[order(DayNum),]
+dat5$sum <- dat5$WT + dat5$LT
+ d2<-dat5[which(dat5$WTeamID==1458| dat4$LTeamID==1458),]
+ h2<-cumsum(d2$sum)
+ d2$h2<-h2
+detach(dat5)
+
+attach(dat6)
+dat6<-dat6[order(DayNum),]
+dat6$sum <- dat6$WT + dat6$LT
+d3<-dat6[which(dat6$WTeamID==1276| dat4$LTeamID==1276),]
+ h3<-cumsum(d3$sum)
+ d3$h3<-h3
+detach(dat6)
+ 
+
+attach(dat7)
+dat7<-dat7[order(DayNum),]
+dat7$sum <- dat7$WT + dat7$LT
+d4<-dat7[which(dat7$WTeamID==1287 | dat4$LTeamID==1287),]
+ h4<-cumsum(d4$sum)
+ d4$h4<-h4
+detach(dat7)
+
+attach(dat8)
+dat8<-dat8[order(DayNum),]
+dat8$sum <- dat8$WT + dat8$LT
+d5<-dat8[which(dat4$WTeamID==1123  | dat4$LTeamID==1123  ),]
+ h5<-cumsum(d5$sum)
+ d5$h5<-h5
+detach(dat8)
+
+attach(dat9)
+dat9<-dat9[order(DayNum),]
+dat9$sum <- dat9$WT + dat9$LT
+ 
+d6<-dat9[which(dat9$WTeamID==1194)  | dat4$LTeamID==1194 ,]
+ h6<-cumsum(d6$sum)
+d6$h6<-h6
+detach(dat9)
+
+
+```
+
+
+
+
+
+
+
+```{r}
+
+
+ 
+ par(mfrow=c(3,2))
+ plot(d1$h1~d1$DayNum,ylab="cumfreq",xlab="DayNum")
+ plot(d2$h2~d2$DayNum,ylab="cumfreq",xlab="DayNum")
+ plot(d3$h3~d3$DayNum,ylab="cumfreq",xlab="DayNum")
+ plot(d4$h4~d4$DayNum,ylab="cumfreq",xlab="DayNum")
+ plot(d5$h5~d5$DayNum,ylab="cumfreq",xlab="DayNum")
+ plot(d6$h6~d6$DayNum,ylab="cumfreq",xlab="DayNum")
+
+ 
+ 
+```
+
+
+
+
+
+
+
+
+
+
+
+
